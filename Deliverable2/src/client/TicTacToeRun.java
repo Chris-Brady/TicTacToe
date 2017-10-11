@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 
-public class TicTacToe extends JFrame
+public class TicTacToeRun extends JFrame
 {   
     public static void main(String[] args)
     {
