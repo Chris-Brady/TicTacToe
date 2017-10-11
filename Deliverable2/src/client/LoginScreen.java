@@ -54,6 +54,7 @@ public class LoginScreen extends JPanel implements ActionListener
             try
             {
                 client.setUp(serverName.getText());
+                client.setTitle("TicTacToe - "+userName.getText());
                 client.updateCurrentScreen(client.getSelectionScreen());
             }
             catch(Exception ex)

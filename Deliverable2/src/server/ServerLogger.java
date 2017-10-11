@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -29,5 +30,7 @@ public class ServerLogger extends JPanel
     public synchronized void writeToLog(String s)
     {
         log.append(sdf.format(cal.getTime())+": "+s+"\n");
+        JScrollBar vertical = scroll.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
     }
 }

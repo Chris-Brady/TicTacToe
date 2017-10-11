@@ -1,8 +1,14 @@
 package server;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class TicTacToeServer extends JFrame
@@ -20,6 +26,17 @@ public class TicTacToeServer extends JFrame
         this.setSize(300,300);
         this.setVisible(true);
         this.add(log);
+        
+        try{this.setTitle("Server - Output "+Inet4Address.getLocalHost().getHostAddress());} 
+        catch (Exception e){log.writeToLog(e.toString());}
+        
+        this.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent evt) 
+            {
+                System.exit(0);
+            }
+        });
         
         clients = new ArrayList<Client>();
         

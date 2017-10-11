@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
 
 public class GameScreen extends JPanel implements ActionListener
@@ -85,7 +86,7 @@ public class GameScreen extends JPanel implements ActionListener
     public void setTurn(boolean b)
     {
         if(b)
-            client.serverMessage("SERVER: "+icon+"'S TURN");
+            writeToChat("SERVER: Your turn("+icon+")");
         isTurn = b;
     }
     public void setGameOver(boolean b){gameOver = b;}
@@ -103,13 +104,15 @@ public class GameScreen extends JPanel implements ActionListener
     public void writeToChat(String s)
     {
         messageArea.append(s+"\n");
+        JScrollBar vertical = scroll.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
     }
     
     public void setButton(int x, int y, String icon)
     {
         squares[x][y].setText(icon);
         turn++;
-        if (turn>=4)
+        if (turn>=4&&icon.equals(this.icon))
         {
             String state = checkForWin();
             if(!state.equals(""))
@@ -136,7 +139,7 @@ public class GameScreen extends JPanel implements ActionListener
         else
         {
             icon = "X";
-            isTurn = true;
+            setTurn(true);
         }
     }
     
@@ -172,7 +175,7 @@ public class GameScreen extends JPanel implements ActionListener
                     if(source == squares[i][j])
                         if(!isTaken(i,j))
                         {
-                            client.serverMessage("GM,"+i+","+j+","+icon+"\n");
+                            client.serverMessage("GM,"+i+","+j+","+icon);
                             setTurn(false);
                         }
         
@@ -189,10 +192,12 @@ public class GameScreen extends JPanel implements ActionListener
         }
         
         else if(source == enter||source == typeArea)
+        {
             if(!"".equals(typeArea.getText()))
             {
-                client.serverMessage("CH"+client.getUsername()+": "+typeArea.getText()+"\n");
+                client.serverMessage("CH"+client.getUsername()+": "+typeArea.getText());
                 typeArea.setText(null);
             }
+        }
     }
 }

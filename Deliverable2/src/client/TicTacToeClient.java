@@ -1,5 +1,7 @@
 package client;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -27,7 +29,20 @@ public class TicTacToeClient extends JFrame
         login = new LoginScreen(this);
         selection = new SelectionScreen(this);
         game = new GameScreen(this);
+        this.setTitle("TicTacToe");
+        this.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent evt) 
+            {
+                serverMessage("RS"+userName);
+                System.exit(0);
+            }
+        });
+        
+        
         updateCurrentScreen(login);
+        
+        
     }
     
     public void serverMessage(String s)
