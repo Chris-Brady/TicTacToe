@@ -8,14 +8,14 @@ import javax.swing.JPanel;
 
 public class LoginScreen extends JPanel implements ActionListener
 {
-    private TicTacToeClient client;
+    private final TicTacToeClient client;
     private final javax.swing.JButton login;
     private final javax.swing.JLabel info;
-     private final javax.swing.JLabel serverInfo;
+    private final javax.swing.JLabel serverInfo;
     private final javax.swing.JTextField userName;
     private final javax.swing.JTextField serverName;
     
-    public LoginScreen(TicTacToeClient client)
+    public LoginScreen(TicTacToeClient client)  //Simple panel to display a login screen
     {
         this.client = client;
         

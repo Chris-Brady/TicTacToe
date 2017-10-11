@@ -8,7 +8,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class ServerLogger extends JPanel
+public class ServerLogger extends JPanel//Log panel to show incoming messages/info to the server
 {
     private final JTextArea log;
     private final JScrollPane scroll;
@@ -17,8 +17,7 @@ public class ServerLogger extends JPanel
     
     public ServerLogger()
     {
-        cal = Calendar.getInstance();
-        sdf = new SimpleDateFormat("HH:mm:ss");
+        sdf = new SimpleDateFormat("HH:mm:ss:SSSS");
         System.out.println();
         log = new JTextArea();
         log.setEditable(false);
@@ -27,8 +26,9 @@ public class ServerLogger extends JPanel
         this.add(scroll);
     }
     
-    public synchronized void writeToLog(String s)
+    public synchronized void writeToLog(String s)//Call this to print to the log
     {
+        cal = Calendar.getInstance();
         log.append(sdf.format(cal.getTime())+": "+s+"\n");
         JScrollBar vertical = scroll.getVerticalScrollBar();
         vertical.setValue( vertical.getMaximum() );

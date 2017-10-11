@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class SelectionScreen extends JPanel implements ActionListener
+public class SelectionScreen extends JPanel implements ActionListener   //This screen asks the user whether theyd like to create or join a game
 {
     private final JLabel info;
     private final JTextField gameID;
@@ -40,7 +40,7 @@ public class SelectionScreen extends JPanel implements ActionListener
     }
 
     @Override
-    public void actionPerformed(ActionEvent e)
+    public void actionPerformed(ActionEvent e)//ActionListener for buttons
     {
        Object source = e.getSource();
        if(source==join)

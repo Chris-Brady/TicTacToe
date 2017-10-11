@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
 
-public class GameScreen extends JPanel implements ActionListener
+public class GameScreen extends JPanel implements ActionListener //Game panel screen which handles logic
 {
     private TicTacToeClient client;
     private int turn;
@@ -81,34 +81,34 @@ public class GameScreen extends JPanel implements ActionListener
         this.add(messenger);
     }
     
-    private boolean isTaken(int x, int y){return !squares[x][y].getText().equals("");}
+    private boolean isTaken(int x, int y){return !squares[x][y].getText().equals("");}  //Check if a tile is taken
     
-    public void setTurn(boolean b)
+    public void setTurn(boolean b)  //Set your turn
     {
         if(b)
             writeToChat("SERVER: Your turn("+icon+")");
         isTurn = b;
     }
-    public void setGameOver(boolean b){gameOver = b;}
+    public void setGameOver(boolean b){gameOver = b;}//Set game Over
     
-    public String getIcon(){return this.icon;}
-    public void setIcon(String icon){this.icon = icon;}
+    public String getIcon(){return this.icon;}//Is player X or O?
+    public void setIcon(String icon){this.icon = icon;}//Set player X or O
     
-    public void init()
+    public void init()  //Set some initials
     {
         turn = 0;
         isTurn = false;
         gameOver = false;
     }
     
-    public void writeToChat(String s)
+    public void writeToChat(String s)   //Write to messageArea/ingame chat
     {
         messageArea.append(s+"\n");
         JScrollBar vertical = scroll.getVerticalScrollBar();
         vertical.setValue( vertical.getMaximum() );
     }
     
-    public void setButton(int x, int y, String icon)
+    public void setButton(int x, int y, String icon)//Set board button as X or Y
     {
         squares[x][y].setText(icon);
         turn++;
@@ -120,7 +120,7 @@ public class GameScreen extends JPanel implements ActionListener
         }
     }
     
-    public void resetGame(boolean clearChat)
+    public void resetGame(boolean clearChat)//Clear board and messages(optionally)
     {
         init();
         if(clearChat)
@@ -132,7 +132,7 @@ public class GameScreen extends JPanel implements ActionListener
                 squares[i][j].setText("");
     }
     
-    public void restart()
+    public void restart()   //If you're X, you're now O and playing again 
     {
         if(icon.equals("X"))
             icon = "O";
@@ -143,7 +143,7 @@ public class GameScreen extends JPanel implements ActionListener
         }
     }
     
-    public String checkForWin()
+    public String checkForWin() //Fuction to check for a win state
     {
         String result = "";
         String tmpr, tmpc = "";
@@ -166,7 +166,7 @@ public class GameScreen extends JPanel implements ActionListener
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) 
+    public void actionPerformed(ActionEvent e) //ActionListener for all the buttons
     {
         Object source = e.getSource();
         if(isTurn)

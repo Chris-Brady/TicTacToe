@@ -5,7 +5,7 @@ import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 
-public class Client implements Runnable
+public class Client implements Runnable//Instance of a client on the server
 {
     private Socket socket;
     private TicTacToeServer s;
@@ -35,48 +35,48 @@ public class Client implements Runnable
         {
             in = new DataInputStream (socket.getInputStream());
             out = new PrintStream(socket.getOutputStream());
-            while((line = in.readLine()) != null && !line.equals("DC"))
+            while((line = in.readLine()) != null)               //Interpret messages from client
             {   
-                if(line.startsWith("NG")) //New Game
+                if(line.startsWith("NG")) //Tell server to start new game
                 {
                     if(s.countClients(line.substring(2))== 0)
                     {
                         this.ID = line.substring(2);
-                        out.println("SVICONX");
-                        out.println("SVSTARTGAME");
+                        out.println("SVICONX");     //Whoever started the game gets X
+                        out.println("SVSTARTGAME"); //Tell the client to open a gamescreen
                     }
                     else
                     {
-                        out.println("SVGAMEINUSE");
+                        out.println("SVGAMEINUSE"); //Requested game ID already exists
                     }
                 }
                 
-                else if(line.startsWith("JG")) //Join Game
+                else if(line.startsWith("JG")) //Tell the server to update the ID of the client to connect him with the other client
                 {
                     if(s.countClients(line.substring(2))==1)
                     {
                         this.ID = line.substring(2);
-                        out.println("SVICONO");
+                        out.println("SVICONO"); //Joiningplayer gets O
                         out.println("SVSTARTGAME");
-                        s.sendMessageToClients("CHSERVER: GAME BEGIN!", ID);
-                        s.sendMessageToClients("SVTURNX",ID);
+                        s.sendMessageToClients("CHSERVER: GAME BEGIN!", ID);//Chat message to say the game has begun
+                        s.sendMessageToClients("SVTURNX",ID);   //Grant X the first turn
                     }
                     else
                     {
-                        out.println("SVNOGAME");
+                        out.println("SVNOGAME");//Game does not exist with that ID
                     }
                 }
                 
-                else if(line.startsWith("ID"))
+                else if(line.startsWith("ID"))  //Clear Clients game IDs so they no longer recieve messages from each other
                 {
                     ID=null;
                 }
                 
                 else
                 {
-                    s.sendMessageToClients(line,ID);
+                    s.sendMessageToClients(line,ID);    //Pass along the message for the clients to interpret
                 }
-                s.log("ID: "+ID+" Msg: "+line);
+                s.log("ID: "+ID+" Msg: "+line); //Log the message
             }
             socket.close();
             in.close();
@@ -105,7 +105,7 @@ public class Client implements Runnable
         return this.ID;
     }
     
-    public void sendMessage(String s)
+    public void sendMessage(String s)   //Send message to this client
     {
         out.println(s);
     }

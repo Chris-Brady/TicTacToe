@@ -2,7 +2,7 @@ package client;
 
 import java.io.BufferedReader;
 
-public class ServerListener implements Runnable
+public class ServerListener implements Runnable //This class listens for messages from the server as a thread
 {
     private BufferedReader br;
     private GameScreen gs;
@@ -26,12 +26,13 @@ public class ServerListener implements Runnable
             }
             catch(Exception e)
             {
-                System.out.println(e);
+                c.alertUser("Server Error!");
+                System.exit(0);
             }
         }
     }
     
-    private void Interpret(String s)
+    private void Interpret(String s)    //This function interprets server messages and affects the client accordingly
     {
         System.out.println("Rec: "+s);  
         
