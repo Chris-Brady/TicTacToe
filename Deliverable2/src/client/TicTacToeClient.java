@@ -72,8 +72,8 @@ public class TicTacToeClient extends JFrame
     {
         this.getContentPane().removeAll();
         this.getContentPane().add(p);
-        this.setSize(300,500);
         this.pack();
+        this.setSize(600,420);
     }
     
     public void alertUser(String s)

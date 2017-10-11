@@ -36,7 +36,6 @@ public class LoginScreen extends JPanel implements ActionListener
         login.addActionListener(this);
         
         this.setLayout(new GridLayout(5,1));
-        this.setSize(1000, 500);
         this.add(info);
         this.add(userName);
         this.add(serverInfo);

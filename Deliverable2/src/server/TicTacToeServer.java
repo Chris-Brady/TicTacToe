@@ -5,10 +5,7 @@ import java.awt.event.WindowEvent;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class TicTacToeServer extends JFrame
@@ -23,7 +20,7 @@ public class TicTacToeServer extends JFrame
     {
         log = new ServerLogger();
         this.setAlwaysOnTop(true);
-        this.setSize(300,300);
+        this.setSize(500,300);
         this.setVisible(true);
         this.add(log);
         
