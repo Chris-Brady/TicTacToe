@@ -6,6 +6,7 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JFrame;
 
 public class TicTacToeServer extends JFrame
@@ -84,5 +85,16 @@ public class TicTacToeServer extends JFrame
             if(c.getID()!=null)
                 if(c.getID().equals(ID))
                     c.sendMessage(s);
+    }
+    
+    public synchronized String getClientsAsString()
+    {
+        String result = "";
+        for(Client c: clients)
+            if(c.getID()!=null)
+                if(countClients(c.getID())==1)
+                    result+="["+c.getID()+"] "+c.getUserName()+"$";
+        
+        return result;
     }
 }

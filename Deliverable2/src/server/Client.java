@@ -1,11 +1,11 @@
 package server;
 
-import server.TicTacToeServer;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
 
-public class Client implements Runnable//Instance of a client on the server
+public class Client implements Runnable, Comparable//Instance of a client on the server
 {
     private Socket socket;
     private TicTacToeServer s;
@@ -13,6 +13,7 @@ public class Client implements Runnable//Instance of a client on the server
     private PrintStream out;
     private String line;
     private String ID;
+    private String userName;
     
     public Client(Socket socket, TicTacToeServer s)
     {
@@ -23,12 +24,13 @@ public class Client implements Runnable//Instance of a client on the server
             in = new DataInputStream (socket.getInputStream());
             out = new PrintStream(socket.getOutputStream()); 
         }
-        catch(Exception e) 
+        catch(IOException e) 
         {
             s.log(e.toString());
         }
     }
     
+    @Override
     public void run() 
     { 
         try 
@@ -42,12 +44,12 @@ public class Client implements Runnable//Instance of a client on the server
                     if(s.countClients(line.substring(2))== 0)
                     {
                         this.ID = line.substring(2);
-                        out.println("SVICONX");     //Whoever started the game gets X
-                        out.println("SVSTARTGAME"); //Tell the client to open a gamescreen
+                        sendMessage("SVICONX");     //Whoever started the game gets X
+                        sendMessage("SVSTARTGAME"); //Tell the client to open a gamescreen
                     }
                     else
                     {
-                        out.println("SVGAMEINUSE"); //Requested game ID already exists
+                        sendMessage("SVGAMEINUSE"); //Requested game ID already exists
                     }
                 }
                 
@@ -56,20 +58,30 @@ public class Client implements Runnable//Instance of a client on the server
                     if(s.countClients(line.substring(2))==1)
                     {
                         this.ID = line.substring(2);
-                        out.println("SVICONO"); //Joiningplayer gets O
-                        out.println("SVSTARTGAME");
+                        sendMessage("SVICONO"); //Joiningplayer gets O
+                        sendMessage("SVSTARTGAME");
                         s.sendMessageToClients("CHSERVER: GAME BEGIN!", ID);//Chat message to say the game has begun
                         s.sendMessageToClients("SVTURNX",ID);   //Grant X the first turn
                     }
                     else
                     {
-                        out.println("SVNOGAME");//Game does not exist with that ID
+                        sendMessage("SVNOGAME");//Game does not exist with that ID
                     }
+                }
+                
+                else if(line.startsWith("RG"))  //Clear Clients game IDs so they no longer recieve messages from each other
+                {
+                    sendMessage("SVRG"+s.getClientsAsString());
                 }
                 
                 else if(line.startsWith("ID"))  //Clear Clients game IDs so they no longer recieve messages from each other
                 {
                     ID=null;
+                }
+                
+                else if(line.startsWith("NR"))  //Name request
+                {
+                    this.userName = line.substring(2);
                 }
                 
                 else
@@ -83,7 +95,7 @@ public class Client implements Runnable//Instance of a client on the server
             out.close();
             s.removeClient(this);
         } 
-        catch (Exception e)
+        catch (IOException e)
         {
             s.log(e.toString());
             try
@@ -93,7 +105,7 @@ public class Client implements Runnable//Instance of a client on the server
                 out.close();
                 s.removeClient(this);
             }
-            catch(Exception ex)
+            catch(IOException ex)
             {
                 s.log(ex.toString());
             }
@@ -105,8 +117,29 @@ public class Client implements Runnable//Instance of a client on the server
         return this.ID;
     }
     
-    public void sendMessage(String s)   //Send message to this client
+    public synchronized void sendMessage(String s)   //Send message to this client
     {
         out.println(s);
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+        if(o instanceof Client)
+        {
+            if( !( ( (Client)o ).getID() ).equals(null) )
+                return compareTo(((Client)o).getID());
+        }
+        return -1;
+    }
+    
+    public void setUserName(String userName)
+    {
+        this.userName = userName;
+    }
+    
+    public String getUserName()
+    {
+        return this.userName;
     }
 }

@@ -11,7 +11,7 @@ public class ServerListener implements Runnable //This class listens for message
     public ServerListener(TicTacToeClient c, BufferedReader br)
     {
         this.c = c;
-        this.gs = (GameScreen)c.getGameScreen();
+        this.gs = c.getGameScreen();
         this.br = br;
     }
 
@@ -97,6 +97,8 @@ public class ServerListener implements Runnable //This class listens for message
             }
             else if(serverCommand.startsWith("ICON"))
                 gs.setIcon(serverCommand.substring(4));
+            else if(serverCommand.startsWith("RG"))
+                c.getSelectionScreen().postUpdate(serverCommand.substring(2));
             else if(serverCommand.equals("STARTGAME"))
                 c.updateCurrentScreen(c.getGameScreen());
             else if (serverCommand.equals("NOGAME"))
@@ -104,6 +106,5 @@ public class ServerListener implements Runnable //This class listens for message
             else if (serverCommand.equals("GAMEINUSE"))
                 c.alertUser("GameID already in use!");  
         }
-    
     }
 }

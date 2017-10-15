@@ -82,7 +82,7 @@ public class TicTacToeClient extends JFrame //This class is the main Client clas
     public void setUsername(String s){this.userName = s;}
 
     public String getUsername(){return this.userName;}
-    public JPanel getGameScreen(){return this.game;}
-    public JPanel getLoginScreen(){return this.login;}
-    public JPanel getSelectionScreen(){return this.selection;}
+    public GameScreen getGameScreen(){return (GameScreen) this.game;}
+    public LoginScreen getLoginScreen(){return (LoginScreen) this.login;}
+    public SelectionScreen getSelectionScreen(){return (SelectionScreen) this.selection;}
 }
