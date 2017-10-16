@@ -21,6 +21,7 @@ public class SelectionScreen extends JPanel implements ActionListener   //This s
     private final JTextArea matches;
     private final JScrollPane scroll;
     private final JButton refresh;
+    private final JButton leader;
     
     private final JPanel interaction;
     
@@ -42,7 +43,12 @@ public class SelectionScreen extends JPanel implements ActionListener   //This s
         matches.setEditable(false);
         
         refresh = new JButton();
+        refresh.setText("Refresh Games");
         refresh.addActionListener(this);
+        
+        leader = new JButton();
+        leader.setText("Show Leaderboard");
+        leader.addActionListener(this);
         
         
         scroll = new JScrollPane(matches);
@@ -53,12 +59,13 @@ public class SelectionScreen extends JPanel implements ActionListener   //This s
         create.addActionListener(this);
         
         interaction = new JPanel();
-        interaction.setLayout(new GridLayout(5,1));
+        interaction.setLayout(new GridLayout(6,1));
         interaction.add(info);
         interaction.add(gameID);
         interaction.add(join);
         interaction.add(create);
         interaction.add(refresh);
+        interaction.add(leader);
         
         this.setLayout(new GridLayout(1,2));
         this.add(scroll);
@@ -76,23 +83,29 @@ public class SelectionScreen extends JPanel implements ActionListener   //This s
        }
        else if(source==create)
        {
-            if(!gameID.getText().equals(""))
+            if(!gameID.getText().equals("")&&gameID.getText().matches("[a-zA-Z1-9]+"))
             {
                 c.serverMessage("NG"+gameID.getText());
-                c.serverMessage("NR"+c.getUsername());
             }
+            else
+                c.alertUser("Invalid name! \nCannot contain special characters!");
        }
        
        else if(source==refresh)
        {
             c.serverMessage("RG");
        }
+       
+       else if(source==leader)
+       {
+            c.serverMessage("LB");
+       }
     }
     
     public void postUpdate(String results)
     {
         String u = "";
-        String[] x=results.split("$");
+        String[] x=results.split("/");
         for(String s:x)
             u+=s+"\n";
         matches.setText(u);

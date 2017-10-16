@@ -7,9 +7,11 @@ public class ServerListener implements Runnable //This class listens for message
     private BufferedReader br;
     private GameScreen gs;
     private TicTacToeClient c;
+    private boolean run;
     
     public ServerListener(TicTacToeClient c, BufferedReader br)
     {
+        this.run = true;
         this.c = c;
         this.gs = c.getGameScreen();
         this.br = br;
@@ -18,7 +20,7 @@ public class ServerListener implements Runnable //This class listens for message
     @Override
     public void run()
     {
-        while(true)
+        while(run)
         {
             try
             {
@@ -32,7 +34,7 @@ public class ServerListener implements Runnable //This class listens for message
         }
     }
     
-    private void Interpret(String s)    //This function interprets server messages and affects the client accordingly
+    private synchronized void Interpret(String s)    //This function interprets server messages and affects the client accordingly
     {
         System.out.println("Rec: "+s);  
         
@@ -75,10 +77,12 @@ public class ServerListener implements Runnable //This class listens for message
             {
                 if(gameState.substring(3).equals(gs.getIcon()))
                 {
+                    c.serverMessage("UDW");
                     c.alertUser("Game Over: Win!");
                 }
                 else
                 {
+                    c.serverMessage("UDL");
                     c.alertUser("Game Over: Loss!");
                 }
                 gs.writeToChat("GAME OVER");
@@ -99,12 +103,25 @@ public class ServerListener implements Runnable //This class listens for message
                 gs.setIcon(serverCommand.substring(4));
             else if(serverCommand.startsWith("RG"))
                 c.getSelectionScreen().postUpdate(serverCommand.substring(2));
+            else if(serverCommand.startsWith("LB"))
+                c.getSelectionScreen().postUpdate(serverCommand.substring(2));
             else if(serverCommand.equals("STARTGAME"))
                 c.updateCurrentScreen(c.getGameScreen());
             else if (serverCommand.equals("NOGAME"))
                 c.alertUser("Game unavailable to join!");
             else if (serverCommand.equals("GAMEINUSE"))
                 c.alertUser("GameID already in use!");  
+            else if (serverCommand.equals("NONAME"))
+                c.alertUser("Incorrect username or password!");
+            else if (serverCommand.equals("NAMETAKEN"))
+                c.alertUser("This username has already been taken!"); 
+            else if (serverCommand.equals("REGISTEROK"))
+                c.alertUser("Registration Succesful!"); 
+            else if (serverCommand.startsWith("LOGINOK"))
+            {
+                c.setUsername(serverCommand.substring(7));
+                c.updateCurrentScreen(c.getSelectionScreen());
+            }
         }
     }
 }

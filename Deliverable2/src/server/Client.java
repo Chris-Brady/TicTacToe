@@ -13,6 +13,7 @@ public class Client implements Runnable, Comparable//Instance of a client on the
     private PrintStream out;
     private String line;
     private String ID;
+    
     private String userName;
     
     public Client(Socket socket, TicTacToeServer s)
@@ -39,6 +40,8 @@ public class Client implements Runnable, Comparable//Instance of a client on the
             out = new PrintStream(socket.getOutputStream());
             while((line = in.readLine()) != null)               //Interpret messages from client
             {   
+                s.log("[I]: ID: "+ID+" Msg: "+line); //Log the message
+                
                 if(line.startsWith("NG")) //Tell server to start new game
                 {
                     if(s.countClients(line.substring(2))== 0)
@@ -58,9 +61,9 @@ public class Client implements Runnable, Comparable//Instance of a client on the
                     if(s.countClients(line.substring(2))==1)
                     {
                         this.ID = line.substring(2);
-                        sendMessage("SVICONO"); //Joiningplayer gets O
-                        sendMessage("SVSTARTGAME");
-                        s.sendMessageToClients("CHSERVER: GAME BEGIN!", ID);//Chat message to say the game has begun
+                        sendMessage("SVICONO"); //Joining player gets O
+                        sendMessage("SVSTARTGAME"); //Joining player's screen switches to game screen
+                        s.sendMessageToClients("CHSERVER: GAME BEGIN!", ID);    //Chat message to say the game has begun
                         s.sendMessageToClients("SVTURNX",ID);   //Grant X the first turn
                     }
                     else
@@ -69,9 +72,14 @@ public class Client implements Runnable, Comparable//Instance of a client on the
                     }
                 }
                 
-                else if(line.startsWith("RG"))  //Clear Clients game IDs so they no longer recieve messages from each other
+                else if(line.startsWith("RG"))  //Requeest Current Games
                 {
                     sendMessage("SVRG"+s.getClientsAsString());
+                }
+                
+                else if(line.startsWith("LB"))  //Request Leaderboard
+                {
+                    sendMessage("SVLB"+s.getLeaderBoard());
                 }
                 
                 else if(line.startsWith("ID"))  //Clear Clients game IDs so they no longer recieve messages from each other
@@ -79,16 +87,43 @@ public class Client implements Runnable, Comparable//Instance of a client on the
                     ID=null;
                 }
                 
-                else if(line.startsWith("NR"))  //Name request
+                //storage: name/pass/wins/losses
+                else if(line.startsWith("LR"))  //Login Request LR/name/pass
                 {
-                    this.userName = line.substring(2);
+                    String[] temp = line.split("/");
+                    String[] user = s.isUser(temp[1],temp[2]);
+                    if(user!=null)
+                    {
+                        this.userName = user[0];
+                        sendMessage("SVLOGINOK"+userName);
+                    }
+                    else
+                        sendMessage("SVNONAME");
                 }
                 
-                else
+                else if(line.startsWith("RR"))  //Register Request RR/name/pass
                 {
-                    s.sendMessageToClients(line,ID);    //Pass along the message for the clients to interpret
+                    String[] temp = line.split("/");
+                    if(s.nameAvailable(temp[1]))
+                    {
+                        s.addNewUser(temp[1],temp[2]);
+                        sendMessage("SVREGISTEROK");
+                    }
+                    else
+                    {
+                        sendMessage("SVNAMETAKEN");
+                    }
                 }
-                s.log("ID: "+ID+" Msg: "+line); //Log the message
+                
+                else if(line.startsWith("UD"))  //Update Scores UDW / UDL
+                {
+                    s.updateUser(userName, line.substring(2));
+                }
+                
+                else    //Pass along the message for the clients to interpret
+                {
+                    s.sendMessageToClients(line,ID);
+                }
             }
             socket.close();
             in.close();
@@ -117,8 +152,9 @@ public class Client implements Runnable, Comparable//Instance of a client on the
         return this.ID;
     }
     
-    public synchronized void sendMessage(String s)   //Send message to this client
+    public synchronized void sendMessage(String s)   //Send message to THIS client
     {
+        this.s.log("[O]: ID:"+ID+": "+s);
         out.println(s);
     }
 
@@ -131,11 +167,6 @@ public class Client implements Runnable, Comparable//Instance of a client on the
                 return compareTo(((Client)o).getID());
         }
         return -1;
-    }
-    
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
     }
     
     public String getUserName()

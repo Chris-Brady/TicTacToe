@@ -12,9 +12,8 @@ import javax.swing.JPanel;
 
 public class TicTacToeClient extends JFrame //This class is the main Client class, it sends messages to the server and stores user info
 {  
-    private String userName;    
+    private String userName;
     private final JPanel game;
-    private final JPanel login;
     private final JPanel selection;
     private Socket link;
     private BufferedReader br;
@@ -23,7 +22,6 @@ public class TicTacToeClient extends JFrame //This class is the main Client clas
     
     public TicTacToeClient()
     { 
-        login = new LoginScreen(this);
         selection = new SelectionScreen(this);
         game = new GameScreen(this);
         
@@ -34,11 +32,25 @@ public class TicTacToeClient extends JFrame //This class is the main Client clas
         {
             public void windowClosing(WindowEvent evt) 
             {
-                serverMessage("RS"+userName);
+                if(link!=null)
+                {
+                    serverMessage("RS"+userName);
+                    try
+                    {
+                        reciever = null;
+                        pw.close();
+                        br.close();
+                        link.close();
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e);
+                    }
+                }
                 System.exit(0);
             }
         });
-        updateCurrentScreen(login);      
+        updateCurrentScreen(new ServerSelect(this));
     }
     
     public void serverMessage(String s)//Sends a message to the server
@@ -50,12 +62,12 @@ public class TicTacToeClient extends JFrame //This class is the main Client clas
         }
         catch(Exception e)
         {
+            System.out.println(e);
             alertUser("Error messaging server!");
-            System.exit(0);
         }
     }
     
-    public void setUp(String serverIP) throws Exception//Set up the socket
+    public void setUp(String serverIP) throws Exception //Set up the socket
     {
         link = new Socket(serverIP,4000);
         br=new BufferedReader(new InputStreamReader(link.getInputStream()));
@@ -80,9 +92,7 @@ public class TicTacToeClient extends JFrame //This class is the main Client clas
     
     /*Basic Getters and Setters*/
     public void setUsername(String s){this.userName = s;}
-
     public String getUsername(){return this.userName;}
     public GameScreen getGameScreen(){return (GameScreen) this.game;}
-    public LoginScreen getLoginScreen(){return (LoginScreen) this.login;}
     public SelectionScreen getSelectionScreen(){return (SelectionScreen) this.selection;}
 }
