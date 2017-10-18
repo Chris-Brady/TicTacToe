@@ -3,17 +3,12 @@ package server;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class TicTacToeServer extends JFrame
@@ -29,8 +24,8 @@ public class TicTacToeServer extends JFrame
     public TicTacToeServer()    //Server holds all the clients
     {
         log = new ServerLogger();
-        clients = new ArrayList<Client>();
-        users = new ArrayList<String[]>();
+        clients = new ArrayList<>();
+        users = new ArrayList<>();
         
         this.setAlwaysOnTop(true);
         this.setSize(500,300);
@@ -57,6 +52,7 @@ public class TicTacToeServer extends JFrame
         
         this.addWindowListener(new WindowAdapter()
         {
+            @Override
             public void windowClosing(WindowEvent evt) 
             {
                 dumpUserBase();
