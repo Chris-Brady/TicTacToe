@@ -117,6 +117,8 @@ public class ServerListener implements Runnable //This class listens for message
                 c.alertUser("This username has already been taken!"); 
             else if (serverCommand.equals("REGISTEROK"))
                 c.alertUser("Registration Succesful!"); 
+            else if (serverCommand.equals("USERACTIVE"))
+                c.alertUser("This account is already online!"); 
             else if (serverCommand.startsWith("LOGINOK"))
             {
                 c.setUsername(serverCommand.substring(7));

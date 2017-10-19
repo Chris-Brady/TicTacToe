@@ -127,9 +127,13 @@ public class TicTacToeServer extends JFrame
             result+=s[0]+"\tW["+s[2]+"]\tL["+s[3]+"]/"; 
         return result;
     }
-
-    public synchronized boolean nameAvailable()
+    
+    public synchronized boolean userOnline(String s)
     {
+        for(Client c: clients)
+            if(c.getUserName()!=null)
+                if(c.getUserName().equals(s))
+                    return true;
         return false;
     }
     
@@ -176,6 +180,8 @@ public class TicTacToeServer extends JFrame
                 return false;
         return true;
     }
+    
+    
 
     public synchronized void addNewUser(String name, String pass)
     {

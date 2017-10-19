@@ -1,11 +1,9 @@
 package client;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 
 
 public class GameScreen extends JPanel implements ActionListener //Game panel screen which handles logic

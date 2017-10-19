@@ -94,8 +94,13 @@ public class Client implements Runnable, Comparable//Instance of a client on the
                     String[] user = s.isUser(temp[1],temp[2]);
                     if(user!=null)
                     {
-                        this.userName = user[0];
-                        sendMessage("SVLOGINOK"+userName);
+                        if(!s.userOnline(temp[1]))
+                        {
+                            this.userName = user[0];
+                            sendMessage("SVLOGINOK"+userName);
+                        }
+                        else
+                            sendMessage("SVUSERACTIVE");
                     }
                     else
                         sendMessage("SVNONAME");
